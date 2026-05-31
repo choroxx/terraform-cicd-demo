@@ -16,7 +16,7 @@ provider "docker" {
 
 # NGINXのイメージをプルする定義
 resource "docker_image" "nginx" {
-  name         = "nginx:1.25.3"  # latestをやめ、バージョンを明示する
+  name         = "nginx:1.25.3" # latestをやめ、バージョンを明示する
   keep_locally = false
 }
 
