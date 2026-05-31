@@ -1,0 +1,28 @@
+name: "Terraform CI/CD Pipeline"
+
+# ここがトリガーだ。ここが正しく書かれているかチェックしろ
+on:
+  push:
+    branches:
+jobs:
+  # コードの正当性を担保するCIジョブ
+  lint_and_plan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+      - run: terraform init
+      - run: terraform fmt -check  # スタイル統一の強制
+      - run: terraform validate    # 論理チェック
+      - run: terraform plan        # 実行計画の確認
+
+  # 本番反映を行うCDジョブ
+  deploy:
+    needs: lint_and_plan
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+      - run: terraform init
+      - run: terraform apply -auto-approve
